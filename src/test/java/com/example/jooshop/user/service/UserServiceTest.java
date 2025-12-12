@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ class UserServiceTest {
         String email = "test@example.com";
         String name = "홍길동";
         User savedUser = new User(email, name);
+        ReflectionTestUtils.setField(savedUser, "id", 1L);
 
         given(userRepository.existsByEmail(email)).willReturn(false);
         given(userRepository.save(any(User.class))).willReturn(savedUser);
@@ -42,6 +44,7 @@ class UserServiceTest {
 
         // then
         assertThat(userId).isNotNull();
+        assertThat(userId).isEqualTo(1L);
         verify(userRepository).existsByEmail(email);
         verify(userRepository).save(any(User.class));
     }
@@ -69,6 +72,7 @@ class UserServiceTest {
         // given
         Long userId = 1L;
         User user = new User("test@example.com", "홍길동");
+        ReflectionTestUtils.setField(user, "id", userId);
 
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
