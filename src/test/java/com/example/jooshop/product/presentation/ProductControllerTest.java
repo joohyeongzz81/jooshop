@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,7 +43,7 @@ class ProductControllerTest {
     void createProduct_success() throws Exception {
         // given
         ProductCreateRequest request = new ProductCreateRequest("맥북 프로", 10);
-        given(productService.createProduct(any(), anyInt())).willReturn(1L);
+        given(productService.createProduct(any(ProductCreateRequest.class))).willReturn(1L);
 
         // when & then
         mockMvc.perform(post("/api/products")

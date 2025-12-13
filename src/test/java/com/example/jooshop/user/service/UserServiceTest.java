@@ -2,6 +2,7 @@ package com.example.jooshop.user.service;
 
 import com.example.jooshop.user.domain.User;
 import com.example.jooshop.user.domain.repository.UserRepository;
+import com.example.jooshop.user.dto.request.UserJoinRequest;
 import com.example.jooshop.user.dto.response.UserResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,21 +33,20 @@ class UserServiceTest {
     @DisplayName("회원 가입 성공")
     void join_success() {
         // given
-        String email = "test@example.com";
-        String name = "홍길동";
-        User savedUser = new User(email, name);
+        UserJoinRequest request = new UserJoinRequest("test@example.com", "홍길동");
+        User savedUser = new User(request.getEmail(), request.getName());
         ReflectionTestUtils.setField(savedUser, "id", 1L);
 
-        given(userRepository.existsByEmail(email)).willReturn(false);
+        given(userRepository.existsByEmail(request.getEmail())).willReturn(false);
         given(userRepository.save(any(User.class))).willReturn(savedUser);
 
         // when
-        Long userId = userService.join(email, name);
+        Long userId = userService.join(request);
 
         // then
         assertThat(userId).isNotNull();
         assertThat(userId).isEqualTo(1L);
-        verify(userRepository).existsByEmail(email);
+        verify(userRepository).existsByEmail(request.getEmail());
         verify(userRepository).save(any(User.class));
     }
 
@@ -54,17 +54,16 @@ class UserServiceTest {
     @DisplayName("이메일 중복 시 회원 가입 실패")
     void join_fail_duplicateEmail() {
         // given
-        String email = "test@example.com";
-        String name = "홍길동";
+        UserJoinRequest request = new UserJoinRequest("test@example.com", "홍길동");
 
-        given(userRepository.existsByEmail(email)).willReturn(true);
+        given(userRepository.existsByEmail(request.getEmail())).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> userService.join(email, name))
+        assertThatThrownBy(() -> userService.join(request))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 존재하는 이메일입니다.");
 
-        verify(userRepository).existsByEmail(email);
+        verify(userRepository).existsByEmail(request.getEmail());
     }
 
     @Test

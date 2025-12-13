@@ -2,6 +2,8 @@ package com.example.jooshop.product.service;
 
 import com.example.jooshop.product.domain.Product;
 import com.example.jooshop.product.domain.repository.ProductRepository;
+import com.example.jooshop.product.dto.request.ProductCreateRequest;
+import com.example.jooshop.product.dto.request.StockAddRequest;
 import com.example.jooshop.product.dto.response.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,15 +35,14 @@ class ProductServiceTest {
     @DisplayName("상품 등록 성공")
     void createProduct_success() {
         // given
-        String name = "맥북 프로";
-        Integer stock = 10;
-        Product savedProduct = new Product(name, stock);
+        ProductCreateRequest request = new ProductCreateRequest("맥북 프로", 10);
+        Product savedProduct = new Product(request.getName(), request.getStock());
         ReflectionTestUtils.setField(savedProduct, "id", 1L);
 
         given(productRepository.save(any(Product.class))).willReturn(savedProduct);
 
         // when
-        Long productId = productService.createProduct(name, stock);
+        Long productId = productService.createProduct(request);
 
         // then
         assertThat(productId).isNotNull();
@@ -105,13 +106,14 @@ class ProductServiceTest {
     void addStock_success() {
         // given
         Long productId = 1L;
+        StockAddRequest request = new StockAddRequest(5);
         Product product = new Product("맥북 프로", 10);
         ReflectionTestUtils.setField(product, "id", productId);
 
         given(productRepository.findById(productId)).willReturn(Optional.of(product));
 
         // when
-        productService.addStock(productId, 5);
+        productService.addStock(productId, request);
 
         // then
         assertThat(product.getStock()).isEqualTo(15);

@@ -16,7 +16,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,7 +41,7 @@ class UserControllerTest {
     void join_success() throws Exception {
         // given
         UserJoinRequest request = new UserJoinRequest("test@example.com", "홍길동");
-        given(userService.join(anyString(), anyString())).willReturn(1L);
+        given(userService.join(any(UserJoinRequest.class))).willReturn(1L);
 
         // when & then
         mockMvc.perform(post("/api/users")

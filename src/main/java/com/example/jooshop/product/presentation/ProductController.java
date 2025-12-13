@@ -20,14 +20,14 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<Void> createProduct(@Valid @RequestBody ProductCreateRequest request) {
-        Long productId = productService.createProduct(request.getName(), request.getStock());
+    public ResponseEntity<Void> createProduct(@Valid @RequestBody final ProductCreateRequest request) {
+        Long productId = productService.createProduct(request);
         return ResponseEntity.created(URI.create("/products/" + productId))
                 .build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable final Long id) {
         ProductResponse response = productService.findById(id);
         return ResponseEntity.ok(response);
     }
@@ -40,9 +40,9 @@ public class ProductController {
 
     @PatchMapping("/{id}/stock")
     public ResponseEntity<Void> addStock(
-            @PathVariable Long id,
-            @Valid @RequestBody StockAddRequest request) {
-        productService.addStock(id, request.getQuantity());
+            @PathVariable final Long id,
+            @Valid @RequestBody final StockAddRequest request) {
+        productService.addStock(id, request);
         return ResponseEntity.ok().build();
     }
 }
