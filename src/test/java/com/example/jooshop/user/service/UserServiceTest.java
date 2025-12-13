@@ -2,6 +2,7 @@ package com.example.jooshop.user.service;
 
 import com.example.jooshop.user.domain.User;
 import com.example.jooshop.user.domain.repository.UserRepository;
+import com.example.jooshop.user.dto.response.UserResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,11 +78,11 @@ class UserServiceTest {
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // when
-        User foundUser = userService.findById(userId);
+        UserResponse response = userService.findById(userId);
 
         // then
-        assertThat(foundUser.getEmail()).isEqualTo("test@example.com");
-        assertThat(foundUser.getName()).isEqualTo("홍길동");
+        assertThat(response.getEmail()).isEqualTo("test@example.com");
+        assertThat(response.getName()).isEqualTo("홍길동");
         verify(userRepository).findById(userId);
     }
 

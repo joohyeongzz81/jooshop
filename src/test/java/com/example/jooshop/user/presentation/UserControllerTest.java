@@ -3,6 +3,7 @@ package com.example.jooshop.user.presentation;
 import com.example.jooshop.global.config.WebMvcConfig;
 import com.example.jooshop.user.domain.User;
 import com.example.jooshop.user.dto.request.UserJoinRequest;
+import com.example.jooshop.user.dto.response.UserResponse;
 import com.example.jooshop.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -82,7 +83,8 @@ class UserControllerTest {
     void getUser_success() throws Exception {
         // given
         User user = new User("test@example.com", "홍길동");
-        given(userService.findById(1L)).willReturn(user);
+        UserResponse response = UserResponse.from(user);
+        given(userService.findById(1L)).willReturn(response);
 
         // when & then
         mockMvc.perform(get("/api/users/1"))
