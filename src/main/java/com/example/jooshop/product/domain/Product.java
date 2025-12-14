@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import static com.example.jooshop.global.exception.ExceptionCode.INSUFFICIENT_STOCK;
 
 @Entity
-@Table(name = "products")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseEntity {
