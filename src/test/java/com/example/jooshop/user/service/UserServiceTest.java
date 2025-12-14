@@ -1,5 +1,6 @@
 package com.example.jooshop.user.service;
 
+import com.example.jooshop.global.exception.BadRequestException;
 import com.example.jooshop.user.domain.User;
 import com.example.jooshop.user.domain.repository.UserRepository;
 import com.example.jooshop.user.dto.request.UserJoinRequest;
@@ -60,7 +61,7 @@ class UserServiceTest {
 
         // when & then
         assertThatThrownBy(() -> userService.join(request))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessage("이미 존재하는 이메일입니다.");
 
         verify(userRepository).existsByEmail(request.getEmail());
@@ -95,8 +96,8 @@ class UserServiceTest {
 
         // when & then
         assertThatThrownBy(() -> userService.findById(userId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 회원입니다.");
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("요청한 ID에 해당하는 회원이 존재하지 않습니다.");
 
         verify(userRepository).findById(userId);
     }

@@ -1,5 +1,6 @@
 package com.example.jooshop.product.service;
 
+import com.example.jooshop.global.exception.BadRequestException;
 import com.example.jooshop.product.domain.Product;
 import com.example.jooshop.product.domain.repository.ProductRepository;
 import com.example.jooshop.product.dto.request.ProductCreateRequest;
@@ -78,8 +79,8 @@ class ProductServiceTest {
 
         // when & then
         assertThatThrownBy(() -> productService.findById(productId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 상품입니다.");
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("요청한 ID에 해당하는 상품이 존재하지 않습니다.");
 
         verify(productRepository).findById(productId);
     }
