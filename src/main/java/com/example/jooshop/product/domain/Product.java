@@ -1,12 +1,16 @@
 package com.example.jooshop.product.domain;
 
 import com.example.jooshop.global.entity.BaseEntity;
+import com.example.jooshop.global.exception.BadRequestException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.example.jooshop.global.exception.ExceptionCode.INSUFFICIENT_STOCK;
+
 @Entity
+@Table(name = "products")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product extends BaseEntity {
@@ -40,7 +44,7 @@ public class Product extends BaseEntity {
             throw new IllegalArgumentException("감소 수량은 양수여야 합니다.");
         }
         if (this.stock < quantity) {
-            throw new IllegalStateException("재고가 부족합니다.");
+            throw new BadRequestException(INSUFFICIENT_STOCK);
         }
         this.stock -= quantity;
     }
