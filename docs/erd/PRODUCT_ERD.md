@@ -1,10 +1,5 @@
 # Product 도메인 설계
 
-## 개요
-상품 정보 및 재고를 관리하는 엔티티
-
----
-
 ## 테이블: products
 
 | 컬럼명 | 타입 | 제약조건 | 설명 |
@@ -12,45 +7,23 @@
 | id | BIGINT | PK, AUTO_INCREMENT | 상품 ID |
 | name | VARCHAR(255) | NOT NULL | 상품명 |
 | stock | INT | NOT NULL, DEFAULT 0 | 재고 수량 |
-| created_at | TIMESTAMP | NOT NULL | 상품 등록일시 |
+| created_at | TIMESTAMP | NOT NULL | 생성일시 |
+| updated_at | TIMESTAMP | NOT NULL | 수정일시 |
+| deleted_at | TIMESTAMP | NULL | 삭제일시 |
 
 ---
 
 ## 비즈니스 규칙
 
-### 1. 재고 관리
-- 재고는 0 이상의 정수
-- 음수 불가 (재고 부족 시 에러)
-
-### 2. 필수 입력 항목
-- 상품명: 필수 입력
-- 초기 재고: 기본값 0
-
-### 3. 생성 시점 자동 기록
-- created_at은 상품 등록 시 자동 설정
-
-### 4. 재입고 알림 트리거
-- 재고 추가 시 해당 상품 구독자들에게 알림 발송
+- 재고는 0 이상
+- 재고 부족 시 감소 불가
+- 재고 추가 시 구독자에게 알림 자동 발송
 
 ---
 
 ## 연관관계
 
----
-
-## 주요 기능
-
-### 1. 상품 등록
-- 상품명, 초기 재고 입력
-- 상품 정보 저장
-
-### 2. 상품 조회
-- 상품 목록 조회
-- 상품 상세 조회 (ID 기준)
-
-### 3. 재고 추가
-- 재고 수량 증가
-
-### 4. 재고 감소
-- 주문 시 재고 차감
-- 재고 부족 시 에러
+```
+[products] 1 ─── * [product_restock_subscriptions]
+[products] 1 ─── * [notifications] (논리적)
+```
