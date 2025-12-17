@@ -1,6 +1,7 @@
 package com.example.jooshop.product.service;
 
 import com.example.jooshop.global.exception.BadRequestException;
+import com.example.jooshop.notification.service.NotificationService;
 import com.example.jooshop.product.domain.Product;
 import com.example.jooshop.product.domain.repository.ProductRepository;
 import com.example.jooshop.product.dto.request.ProductCreateRequest;
@@ -28,6 +29,9 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private ProductService productService;
@@ -103,7 +107,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("재고 추가 성공")
+    @DisplayName("재고 추가 성공 및 재입고 알림 발송")
     void addStock_success() {
         // given
         Long productId = 1L;
@@ -119,6 +123,7 @@ class ProductServiceTest {
         // then
         assertThat(product.getStock()).isEqualTo(15);
         verify(productRepository).findById(productId);
+        verify(notificationService).sendRestockNotification(productId);
     }
 
     @Test
@@ -151,7 +156,7 @@ class ProductServiceTest {
 
         // when & then
         assertThatThrownBy(() -> productService.decreaseStock(productId, 10))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessage("재고가 부족합니다.");
 
         verify(productRepository).findById(productId);

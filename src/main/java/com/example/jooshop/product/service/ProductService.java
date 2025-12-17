@@ -1,6 +1,7 @@
 package com.example.jooshop.product.service;
 
 import com.example.jooshop.global.exception.BadRequestException;
+import com.example.jooshop.notification.service.NotificationService;
 import com.example.jooshop.product.domain.Product;
 import com.example.jooshop.product.domain.repository.ProductRepository;
 import com.example.jooshop.product.dto.request.ProductCreateRequest;
@@ -20,6 +21,7 @@ import static com.example.jooshop.global.exception.ExceptionCode.NOT_FOUND_PRODU
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public Long createProduct(final ProductCreateRequest request) {
@@ -45,7 +47,9 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PRODUCT_ID));
         product.addStock(request.getQuantity());
-        // TODO: 재입고 알림 발송 로직 추가
+
+        // 재입고 알림 발송
+        notificationService.sendRestockNotification(productId);
     }
 
     @Transactional
